@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import { colRef } from './Firebase-config';
+import { useEffect } from 'react';
 import './App.css';
 
 function App() {
+
+  // useEffect(() => { 
+  //   //fetch books from firestore
+  //   colRef.get()
+  //     .then((snapshot) => {
+  //       let books = [];
+  //       snapshot.docs.forEach((doc) => {
+  //         books.push({ ...doc.data(), id: doc.id });
+  //       });
+  //       console.log(books);
+  //     }).catch ((err) => {
+  //       console.log(err);
+  //     })
+  // },[])
+    
+    
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <p>lol</p>
     </div>
   );
 }
