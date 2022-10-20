@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection } from "firebase/firestore";
 
 
 // Your web app's Firebase configuration
@@ -20,17 +20,8 @@ console.log(app, 'app')
 const db = getFirestore(app);
 console.log(db, 'db');
 
-//collection ref
+//collection ref tidy the data
 export const colRef = collection(db, "books");
 
-//get Collection data
-getDocs(colRef)
-  .then((snapshot) => {
-    let books = [];
-  snapshot.docs.forEach((doc) => {
-    books.push({ ...doc.data(), id: doc.id });
-  });
-    console.log(books, 'books');
-  }).catch((err) => {
-    console.log(err, 'oops');
-  });
+export { db };
+    
