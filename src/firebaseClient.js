@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection } from "firebase/firestore";
-
+import { getAuth, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -14,14 +14,27 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-console.log(app, 'app')
 
 //init services
 const db = getFirestore(app);
-console.log(db, 'db');
+const auth = getAuth();
 
 //collection ref tidy the data
 export const colRef = collection(db, "books");
 
-export { db };
-    
+  //logout function
+  const handleLogout = () => {
+
+    const logout = async () => {
+      try {
+        await signOut(auth);
+        console.log("user logged out")
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+  
+    return { logout };
+  };
+
+export { db, auth, handleLogout };
