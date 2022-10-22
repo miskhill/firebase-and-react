@@ -39,28 +39,9 @@ const App = () => {
     await deleteDoc(doc(db, "books", id));
   };
 
-  const handleAction = () => {
-    
+  const handleAction = (id) => {
+    console.log(id);
   }
-
-  //create an onclick for a firebase signup
-  // const handleSignup = async () => {
-  //   try {
-  //     const userCredential = await auth.createUserWithEmailAndPassword(
-  //       setEmail,
-  //       setPassword
-  //     );
-  //     console.log(userCredential);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  //creata a handleClick function
-  // const handleClick = (e) => {
-  //   console.log("clicked");
-  //   e.preventDefault();
-  // };
 
   return (
     <Router>
@@ -73,7 +54,7 @@ const App = () => {
                 title='Login'
                 setEmail={setEmail}
                 setPassword={setPassword}
-                handleAction={()=> handleAction()}
+                handleAction={()=> handleAction(1)}
               />
             }
           />
@@ -84,7 +65,7 @@ const App = () => {
                 title='Register'
                 setEmail={setEmail}
                 setPassword={setPassword}
-                handleAction={()=> handleAction()}
+                handleAction={()=> handleAction(2)}
               />
             }
           />
