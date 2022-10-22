@@ -1,51 +1,77 @@
 import "./App.css";
-import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Book from "./components/book";
-import AddBook from "./components/addBook";
-import Form from "./components/Form";
+import { useState, useEffect } from "react";
 import {
-  collection,
-  query,
-  onSnapshot,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { db, auth, handleLogout } from "./firebaseClient";
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
+import Form from "./components/Form";
+import Home from "./components/Home";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
-  const [books, setBooks] = useState([]);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
 
-  useEffect(() => {
-    const q = query(collection(db, "books"));
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      let booksArray = [];
-      querySnapshot.forEach((doc) => {
-        booksArray.push({ ...doc.data(), id: doc.id });
-      });
-      setBooks(booksArray);
-    });
-    return () => unsub();
-  }, []);
+  const navigate = useNavigate();
 
-  const toggleComplete = async (book) => {
-    await updateDoc(doc(db, "books", book.id), { completed: !book.completed });
-  };
-
-  const handleDelete = async (id) => {
-    await deleteDoc(doc(db, "books", id));
-  };
-
+  //session storage destroyed when browser is closed.
   const handleAction = (id) => {
-    console.log(id);
+    const authentication = getAuth();
+    if (id === 1) {
+      signInWithEmailAndPassword(authentication, email, password)
+        .then((response) => {
+          navigate('/home')
+          sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken)
+        })
+        .catch((error) => {
+          console.log(error.code)
+          if (error.code === 'auth/wrong-password') {
+            toast.error('Please check the Password');
+          }
+          if (error.code === 'auth/user-not-found') {
+            toast.error('Please check the Email');
+          }
+          if (error.code === 'auth/missing-email') {
+            toast.error('Giles!!!');
+          }
+        })
+    }
+    if (id === 2) {
+      createUserWithEmailAndPassword(authentication, email, password)
+        .then((response) => {
+          navigate('/home')
+          sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken)
+        })
+        .catch((error) => {
+          if (error.code === 'auth/email-already-in-use') {
+            toast.error('Email Already in Use');
+          }
+        })
+    }
   }
 
+  useEffect(() => {
+    let authToken = sessionStorage.getItem('Auth Token')
+
+    if (authToken) {
+      navigate('/home')
+    }
+  }, [])
+
   return (
-    <Router>
-      <div className='App'>
+    <div className='App'>
+      <>
+        <ToastContainer />
         <Routes>
           <Route
             path='/login'
@@ -54,7 +80,7 @@ const App = () => {
                 title='Login'
                 setEmail={setEmail}
                 setPassword={setPassword}
-                handleAction={()=> handleAction(1)}
+                handleAction={() => handleAction(1)}
               />
             }
           />
@@ -65,42 +91,15 @@ const App = () => {
                 title='Register'
                 setEmail={setEmail}
                 setPassword={setPassword}
-                handleAction={()=> handleAction(2)}
+                handleAction={() => handleAction(2)}
               />
             }
           />
+
+          <Route path='/home' element={<Home />} />
         </Routes>
-      </div>
-      {/* <form className='signup'>
-        <button onClick={handleSignup}>signup</button>
-        <button onClick={handleClick}>login</button>
-        <button onClick={handleLogout}>logout</button>
-        <h6>Sign Up</h6>
-        <div className='input_container'>
-          <input type='text' placeholder='Enter your email' />
-          <input type='text' placeholder='Enter your password' />
-        </div>
-        <h6>Login</h6>
-        <div className='input_container'>
-          <input type='text' placeholder='Enter your email' />
-          <input type='text' placeholder='Enter your password' />
-        </div>
-      </form> */}
-      <div>
-        <AddBook />
-        <div className='task_container'>
-          {books.map((book) => (
-            <Book
-              key={book.id}
-              book={book}
-              author={book.author}
-              toggleComplete={toggleComplete}
-              handleDelete={handleDelete}
-            />
-          ))}
-        </div>
-      </div>
-    </Router>
+      </>
+    </div>
   );
 };
 
