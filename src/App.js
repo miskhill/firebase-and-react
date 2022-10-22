@@ -1,10 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Book from "./components/book";
 import AddBook from "./components/addBook";
 import Form from "./components/Form";
@@ -43,6 +39,10 @@ const App = () => {
     await deleteDoc(doc(db, "books", id));
   };
 
+  const handleAction = () => {
+    
+  }
+
   //create an onclick for a firebase signup
   // const handleSignup = async () => {
   //   try {
@@ -64,9 +64,32 @@ const App = () => {
 
   return (
     <Router>
-      <div className="App">
-      <Form />
-    </div>
+      <div className='App'>
+        <Routes>
+          <Route
+            path='/login'
+            element={
+              <Form
+                title='Login'
+                setEmail={setEmail}
+                setPassword={setPassword}
+                handleAction={()=> handleAction()}
+              />
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <Form
+                title='Register'
+                setEmail={setEmail}
+                setPassword={setPassword}
+                handleAction={()=> handleAction()}
+              />
+            }
+          />
+        </Routes>
+      </div>
       {/* <form className='signup'>
         <button onClick={handleSignup}>signup</button>
         <button onClick={handleClick}>login</button>
@@ -96,7 +119,7 @@ const App = () => {
           ))}
         </div>
       </div>
-      </Router>
+    </Router>
   );
 };
 
