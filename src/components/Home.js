@@ -1,17 +1,12 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { onSnapshot, collection, query, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { onSnapshot, collection, query, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import AddBook from './addBook';
 import Book from './book';
 import { db } from '../firebaseClient';
 import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('Auth Token');
-    navigate('/login')
-}
 
 let navigate = useNavigate();
   useEffect(() => {
@@ -24,7 +19,12 @@ let navigate = useNavigate();
       if (!authToken) {
           navigate('/login')
       }
-  }, [])
+  }, [navigate])
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('Auth Token');
+    navigate('/login')
+}
 
   
   const [books, setBooks] = useState([]);
